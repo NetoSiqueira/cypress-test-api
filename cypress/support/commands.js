@@ -71,5 +71,20 @@ Cypress.Commands.add('resetTestApi', () =>{
             headers: { Authorization: `JWT ${token}` }
         }).its('status').should('to.be.equal', 200)
     })
+
+Cypress.Commands.add('getContaPorNome', name =>{
+    cy.getToken('neto@neto.com', '1234').then(token =>{
+        cy.request({
+            method: 'GET',
+            url:'/contas',
+            headers: { Authorization: `JWT ${token}` },
+            qs:{
+                nome: name
+            }
+        }).then(res =>{
+            return res.body[0].id
+        })    
+    })    
+})    
     
 })
