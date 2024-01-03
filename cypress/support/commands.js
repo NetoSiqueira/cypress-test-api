@@ -48,3 +48,28 @@ Cypress.Commands.add('resetApp', () =>{
     cy.get(loc.MENU.RESET).click()
 })
 
+Cypress.Commands.add('getToken', (user, pass) =>{
+    cy.request({
+        method: 'POST',
+        url: '/signin',
+        body: {
+            email: user,
+            redirecionar: false, 
+            senha: pass
+        }
+      }).its('body.token').should('not.be.empty')
+      .then(token =>{
+        return token
+      })
+})
+
+Cypress.Commands.add('resetTestApi', () =>{
+    cy.getToken('neto@neto.com', '1234').then(token =>{
+        cy.request({
+            method: 'GET',
+            url: '/reset',
+            headers: { Authorization: `JWT ${token}` }
+        }).its('status').should('to.be.equal', 200)
+    })
+    
+})
